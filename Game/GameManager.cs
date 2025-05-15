@@ -3,6 +3,14 @@ namespace rockpaperscissors;
 public class GameManager
 {
 
+    private IPlayer _player1;
+    private IPlayer _player2;
+    public GameManager(IPlayer player1, IPlayer player2)
+    {
+        _player1 = player1;
+        _player2 = player2;
+    }
+
     public void PlayGame()
     {
         while (true)
@@ -18,60 +26,30 @@ public class GameManager
         }
     }
 
-    private void PlayRound()
+    public RoundResult PlayRound()
     {
-        Choice playerChoice = GetPlayerChoice();
-        Choice computerChoice = GetComputerChoice();
+        Choice playerChoice = _player1.GetChoice();
+        Choice computerChoice =_player2.GetChoice();
         RoundResult result = GetRoundResult(playerChoice, computerChoice);
         Console.WriteLine($"Player chose {playerChoice}");
         Console.WriteLine($"Computer chose {computerChoice}");
         if (result == RoundResult.Player1Winner)
         {
             Console.WriteLine("You win!");
+            return RoundResult.Player1Winner;
         }
         else if (result == RoundResult.Player2Winner)
         {
             Console.WriteLine("Computer wins!");
+            return RoundResult.Player2Winner;
         }
         else
         {
             Console.WriteLine("It's a draw!");
-        }
-        Console.WriteLine("");
+            return RoundResult.Draw;
+        }        
     }
 
-    private Choice GetComputerChoice()
-    {
-        Random random = new Random();
-        int choice = random.Next(0, 3);
-        return (Choice)choice;
-    }
-
-    private Choice GetPlayerChoice()
-    {
-        Console.WriteLine("Enter your choice (R)ock, (P)aper, (S)cissors: ");
-        while (true)
-        {
-            string? input = Console.ReadKey().KeyChar.ToString();
-            if (input == "R" || input == "r")
-            {
-                return Choice.Rock;
-            }
-            else if (input == "P" || input == "p")
-            {
-                return Choice.Paper;
-            }
-            else if (input == "S" || input == "s")
-            {
-                return Choice.Scissors;
-            }
-            else
-            {
-                Console.WriteLine("Invalid choice. Please try again.");
-                Console.WriteLine("");
-            }
-        }                
-    }
 
     private RoundResult GetRoundResult(Choice player1Choice, Choice player2Choice)
     {
